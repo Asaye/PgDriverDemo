@@ -3,6 +3,7 @@ const crypto = require('crypto');      // a module to hash password
 const TYPES = require('./types.json'); // a local file for column 
                                        // data type resolution
 module.exports = class PgDriver {
+  
    constructor() {
       this.socket = null;   // the socket instance
       this.config = null;   // client's configuration data
@@ -28,6 +29,7 @@ module.exports = class PgDriver {
       this._addListeners();
       this.socket.connect(config.port, config.host); 
    }
+  
   _addListeners() {
      // event listener fired when the socket is connected
      this.socket.on("connect", (err) => { 
@@ -63,6 +65,7 @@ module.exports = class PgDriver {
         }
      });
    }
+  
    _startup() { 
      const user = this.config.user;
      const db = this.config.database;
@@ -120,7 +123,6 @@ module.exports = class PgDriver {
         offset += (length - 4); 
      } while (offset < data.length); 
   }
-
 
   _password(offset) { 
      var start = offset; 
@@ -213,6 +215,7 @@ module.exports = class PgDriver {
         this.callback(err); // notify the client about the error
      } 
   }
+  
   _fields(offset) {
      var start = offset, fieldName, end, oid_type; 
      // read 2bytes of integer (the number of fields)
@@ -242,6 +245,7 @@ module.exports = class PgDriver {
         start += (4 + 2 + 4 + 2); 
      }
   }
+  
   _rows(offset) {
      var start = offset, row = {}, len, val_col, name_col;
      const nColumns = this.data.readInt16BE(start); 
@@ -269,6 +273,7 @@ module.exports = class PgDriver {
      // add the current row to the rows property of results     
      this.results.rows.push(row); 
   }
+  
   close() {
      // allocated memory for 1byte ('X') + 4 bytes (length)
      const buffer = Buffer.alloc(1 + 4); 
